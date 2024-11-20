@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import BlogAnimation from "@/components/animations/BlogAnimation";
 
 export const metadata: Metadata = {
-  title: "Agriswara | Blog",
+  title: "TalentPulse Ai | Blog",
 };
 
 export default function Blog() {
