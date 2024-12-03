@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, FC } from "react";
-import { User, Edit3, Save, XCircle } from "lucide-react";
+import { User, Edit3, Save, XCircle, Trash2 } from "lucide-react";
 
 interface CommentsProps {
   blogId: string;
@@ -68,6 +68,15 @@ const Comments: FC<CommentsProps> = ({ blogId }) => {
     setEditingText("");
   };
 
+  const handleDeleteComment = (id: string) => {
+    const updatedComments = comments.filter((comment) => comment.id !== id);
+    setComments(updatedComments);
+    localStorage.setItem(
+      `comments_${blogId}`,
+      JSON.stringify(updatedComments)
+    );
+  };
+
   return (
     <div className="flex flex-col pb-10 gap-4 max-w-screen-xl mx-auto">
       <h3 className="text-3xl font-semibold">Comments</h3>
@@ -132,12 +141,20 @@ const Comments: FC<CommentsProps> = ({ blogId }) => {
             ) : (
               <div className="flex justify-between">
                 <p className="text-xl">{comment.text}</p>
-                <button
-                  className="text-blue-600 hover:underline"
-                  onClick={() => handleEditComment(comment.id, comment.text)}
-                >
-                  <Edit3 /> Edit
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    className="text-blue-600 hover:underline"
+                    onClick={() => handleEditComment(comment.id, comment.text)}
+                  >
+                    <Edit3 /> Edit
+                  </button>
+                  <button
+                    className="text-red-600 hover:underline"
+                    onClick={() => handleDeleteComment(comment.id)}
+                  >
+                    <Trash2 /> Delete
+                  </button>
+                </div>
               </div>
             )}
           </div>
