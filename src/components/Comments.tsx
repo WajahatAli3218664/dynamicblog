@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, FC } from "react";
-import { User} from "lucide-react";
+import { User, Edit3, Save, XCircle } from "lucide-react";
 
 interface CommentsProps {
   blogId: string;
@@ -15,8 +15,10 @@ interface Comment {
 
 const Comments: FC<CommentsProps> = ({ blogId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [name, setName] = useState<string>(""); 
-  const [newComment, setNewComment] = useState<string>(""); 
+  const [name, setName] = useState<string>("");
+  const [newComment, setNewComment] = useState<string>("");
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState<string>("");
 
   useEffect(() => {
     const savedComments = JSON.parse(
@@ -31,7 +33,7 @@ const Comments: FC<CommentsProps> = ({ blogId }) => {
       const dateId = Date.now().toString();
       const updatedComments = [
         ...comments,
-        { name: name, text: newComment, date: currentDate, id: dateId },
+        { name, text: newComment, date: currentDate, id: dateId },
       ];
       setComments(updatedComments);
       localStorage.setItem(
@@ -43,6 +45,29 @@ const Comments: FC<CommentsProps> = ({ blogId }) => {
     }
   };
 
+  const handleEditComment = (id: string, text: string) => {
+    setEditingCommentId(id);
+    setEditingText(text);
+  };
+
+  const handleSaveEdit = (id: string) => {
+    const updatedComments = comments.map((comment) =>
+      comment.id === id ? { ...comment, text: editingText } : comment
+    );
+    setComments(updatedComments);
+    localStorage.setItem(
+      `comments_${blogId}`,
+      JSON.stringify(updatedComments)
+    );
+    setEditingCommentId(null);
+    setEditingText("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditingText("");
+  };
+
   return (
     <div className="flex flex-col pb-10 gap-4 max-w-screen-xl mx-auto">
       <h3 className="text-3xl font-semibold">Comments</h3>
@@ -52,6 +77,7 @@ const Comments: FC<CommentsProps> = ({ blogId }) => {
         className="py-2 px-4 border-[2px]"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        placeholder="Your name"
       />
 
       <textarea
@@ -81,9 +107,39 @@ const Comments: FC<CommentsProps> = ({ blogId }) => {
               </p>
               <p>{comment.date}</p>
             </div>
-            <div className="flex justify-between">
-              <p className="text-xl">{comment.text}</p>
-            </div>
+            {editingCommentId === comment.id ? (
+              <div>
+                <textarea
+                  className="py-2 px-4 border-[2px] w-full"
+                  value={editingText}
+                  onChange={(e) => setEditingText(e.target.value)}
+                />
+                <div className="flex gap-2 mt-2">
+                  <button
+                    className="bg-green-600 text-white py-2 px-4 rounded-lg"
+                    onClick={() => handleSaveEdit(comment.id)}
+                  >
+                    <Save /> Save
+                  </button>
+                  <button
+                    className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                    onClick={handleCancelEdit}
+                  >
+                    <XCircle /> Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between">
+                <p className="text-xl">{comment.text}</p>
+                <button
+                  className="text-blue-600 hover:underline"
+                  onClick={() => handleEditComment(comment.id, comment.text)}
+                >
+                  <Edit3 /> Edit
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>
