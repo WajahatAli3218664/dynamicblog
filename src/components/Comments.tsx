@@ -141,10 +141,11 @@ const Comments: FC<CommentsProps> = ({ blogId }) => {
             ) : (
               <div className="flex justify-between">
                 <p className="text-xl">{comment.text}</p>
-                <div className="flex gap-2">
+                <div className="flex gap-4"> {/* Increased spacing */}
                   <button
                     className="text-blue-600 hover:underline"
                     onClick={() => handleEditComment(comment.id, comment.text)}
+                    style={{ marginRight: "10px" }} // Adjusted left margin
                   >
                     <Edit3 /> Edit
                   </button>
