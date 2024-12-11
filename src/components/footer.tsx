@@ -142,7 +142,7 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <div className="mt-10 flex flex-col sm:flex-row justify-between items-center text-gray-400">
-        <p>© 2024 Wajahat Ali. All rights reserved.</p>
+        <p>Copyright © 2024 Wajahat Ali — @dynamicblogs </p>
         <ul className="flex space-x-4">
           <li>
             <a href="#" className="hover:text-white">
